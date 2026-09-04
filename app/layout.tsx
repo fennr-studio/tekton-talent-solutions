@@ -3,7 +3,6 @@ import { Archivo } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { IntroProvider } from '@/components/layout/Preloader';
 import { CursorFollower } from '@/components/animations/CursorFollower';
 import { SmoothScroll } from '@/components/layout/SmoothScroll';
 import { JsonLd } from '@/components/ui/JsonLd';
@@ -76,11 +75,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={organizationSchema()} />
         <SmoothScroll />
         <CursorFollower />
-        <IntroProvider>
-          <Header />
-          <main id="main">{children}</main>
-          <Footer />
-        </IntroProvider>
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
       </body>
     </html>
   );

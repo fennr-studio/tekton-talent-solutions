@@ -45,8 +45,7 @@
     overflow-x: clip;
   }
 
-  /* Scroll lock while the preloader runs or the menu is open. */
-  html[data-loading='1'] body,
+  /* Scroll lock while the menu is open. */
   body[data-menu='open'] {
     overflow: hidden;
   }

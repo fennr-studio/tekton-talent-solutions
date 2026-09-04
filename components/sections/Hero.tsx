@@ -6,7 +6,6 @@ import { FitText } from '@/components/animations/FitText';
 import { MagneticButton } from '@/components/animations/MagneticButton';
 import { MarqueeText } from '@/components/animations/MarqueeText';
 import { Sticker } from '@/components/ui/Sticker';
-import { useIntroReady } from '@/components/layout/Preloader';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { ease } from '@/lib/motion';
 import { site } from '@/data/site';
@@ -42,7 +41,6 @@ const MARQUEE = [
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const ready = useIntroReady();
   /* The staggered fills are a wide-screen composition. On a phone the same
      fractions just leave a column of dead space down the right-hand side, so
      the lines open out towards full width instead. Mobile-first: the hook
@@ -71,7 +69,7 @@ export function Hero() {
           <motion.p
             className="eyebrow mb-[3vw] text-ash"
             initial={reduced ? undefined : { opacity: 0, y: 14 }}
-            animate={ready ? { opacity: 1, y: 0 } : undefined}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease, delay: 0.05 }}
           >
             {site.city} · {site.coverage}
@@ -90,7 +88,7 @@ export function Hero() {
                   className="block"
                   style={{ width: `${(wide ? line.fill : line.fillSm) * 100}%` }}
                   initial={reduced ? undefined : { y: '112%' }}
-                  animate={ready ? { y: '0%' } : undefined}
+                  animate={{ y: '0%' }}
                   transition={{ duration: 1.15, ease, delay: 0.12 + i * 0.085 }}
                 >
                   <FitText className="display text-ink">
@@ -117,7 +115,7 @@ export function Hero() {
         <motion.div
           className="mt-[4vw] grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"
           initial={reduced ? undefined : { opacity: 0, y: 22 }}
-          animate={ready ? { opacity: 1, y: 0 } : undefined}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease, delay: 0.72 }}
         >
           <p className="measure text-lede text-ash">
@@ -138,7 +136,7 @@ export function Hero() {
         <motion.div
           className="mt-10 flex items-center gap-6 border-t border-line pt-5"
           initial={reduced ? undefined : { opacity: 0 }}
-          animate={ready ? { opacity: 1 } : undefined}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease, delay: 0.9 }}
         >
           <a

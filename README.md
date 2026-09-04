@@ -89,8 +89,7 @@ components/
   animations/             FitText, SplitTextReveal, ScrollReveal, ImageReveal,
                           ParallaxImage, MagneticButton, CursorFollower,
                           MarqueeText, Counter
-  layout/                 Header, MenuOverlay, Footer, Logo, Preloader,
-                          SmoothScroll
+  layout/                 Header, MenuOverlay, Footer, Logo, SmoothScroll
   sections/               one file per homepage chapter, reused across pages
   ui/                     Section, PageHero, Sticker, JsonLd
   graphics/               PortraitPlate
