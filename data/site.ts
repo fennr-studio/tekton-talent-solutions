@@ -1,3 +1,34 @@
+/** The canonical origin, used for metadata, the sitemap and JSON-LD. */
+const PRODUCTION_URL = 'https://www.tektontalentglobal.com';
+
+/**
+ * Resolve the site origin from the environment.
+ *
+ * An environment variable that exists but is empty is the normal case on a
+ * hosting dashboard where someone added the key and left the value blank — and
+ * `??` does not catch it, because an empty string is neither null nor
+ * undefined. `new URL('')` then throws and takes the whole build down at page
+ * collection, which is a long way from the cause. Treat blank as unset, and
+ * verify the result actually parses before handing it to `new URL`.
+ *
+ * Deliberately not falling back to `VERCEL_URL`: that is the per-deployment
+ * host, so canonicals and the sitemap would point at preview builds.
+ */
+function resolveSiteUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!configured) return PRODUCTION_URL;
+
+  // Trailing slashes would double up in `${site.url}${path}`.
+  const normalised = configured.replace(/\/+$/, '');
+
+  try {
+    new URL(normalised);
+    return normalised;
+  } catch {
+    return PRODUCTION_URL;
+  }
+}
+
 export const site = {
   name: 'Tekton Talent Solutions',
   legalName: 'Tekton Talent Solutions Pvt. Ltd.',
@@ -6,7 +37,7 @@ export const site = {
   tagline: "Empowering enterprise growth with India's tech advantage",
   description:
     "India's strategic partner for CMMI Level 3 certified IT recruitment and turnkey technology consulting, delivering excellence since 2021.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.tektontalentglobal.com',
+  url: resolveSiteUrl(),
   email: 'HRTekton@outlook.com',
   phone: '+91 6303069896',
   phoneHref: '+916303069896',
