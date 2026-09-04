@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gutter: clamp(1.25rem, 3.5vw, 4rem);
+    /* Set by CursorFollower; the ring reads them every frame. */
+    --cursor-x: 50vw;
+    --cursor-y: 50vh;
+  }
+
+  * {
+    min-width: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Lenis owns scrolling. Native smooth behaviour fights it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  html.lenis {
+    scroll-behavior: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+    font-family: var(--font-archivo), system-ui, sans-serif;
+    font-weight: 300;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  /* Scroll lock while the preloader runs or the menu is open. */
+  html[data-loading='1'] body,
+  body[data-menu='open'] {
+    overflow: hidden;
+  }
+
+  ::selection {
+    @apply bg-ink text-paper;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.cobalt');
+    outline-offset: 3px;
+  }
+
+  /* Sections that sit on a dark ground opt in, so focus rings stay visible. */
+  .on-dark :focus-visible {
+    outline-color: theme('colors.citrus');
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* ---------------------------------------------------------------------- */
+  /* Type                                                                    */
+  /* ---------------------------------------------------------------------- */
+
+  /**
+   * The display voice: Archivo pushed to the narrow end of its width axis and
+   * set uppercase. One variable family carries both voices, so there is still
+   * only a single font request.
+   */
+  .display {
+    font-variation-settings: 'wdth' 62;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-feature-settings: 'kern' 1;
+  }
+
+  /** Slightly wider — used where a display line must stay readable at size. */
+  .display-wide {
+    font-variation-settings: 'wdth' 78;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .numeral {
+    font-variation-settings: 'wdth' 62;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums lining-nums;
+    text-transform: uppercase;
+  }
+
+  /** Small tracked label — the counterweight to the display type. */
+  .eyebrow {
+    @apply text-micro uppercase;
+    font-variation-settings: 'wdth' 100;
+    font-weight: 500;
+  }
+
+  .body-copy {
+    font-variation-settings: 'wdth' 100;
+    font-weight: 300;
+  }
+
+  /* ---------------------------------------------------------------------- */
+  /* Layout                                                                  */
+  /* ---------------------------------------------------------------------- */
+
+  /** Full-bleed edge padding. Deliberately not a centred max-width container. */
+  .edge {
+    padding-inline: var(--gutter);
+  }
+
+  /** A measure for running text, aligned to the grid rather than centred. */
+  .measure {
+    max-width: theme('maxWidth.measure');
+  }
+
+  /**
+   * Sticker tag — a rotated annotation label. The rotation is set per instance
+   * with --tilt so a row of them never looks mechanical.
+   */
+  .sticker {
+    @apply inline-block px-[0.5em] py-[0.18em] text-ink;
+    font-variation-settings: 'wdth' 62;
+    font-weight: 700;
+    text-transform: uppercase;
+    transform: rotate(var(--tilt, -4deg));
+    line-height: 1;
+  }
+
+  .rule {
+    @apply block h-px w-full border-0 bg-line;
+  }
+  .on-dark .rule {
+    @apply bg-line-dark;
+  }
+}
+
+@layer utilities {
+  /** Clip a display line to its own box so a mask reveal has something to bite. */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    /* Descenders in condensed faces sit low; without this they get shaved. */
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  /** Opt a subtree into dark-ground treatment (focus rings, rules). */
+  .on-dark {
+    color-scheme: dark;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Reduced motion                                                              */
+/* -------------------------------------------------------------------------- */
+/* Every scroll-driven effect is additionally gated in JS; this is the floor.   */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
