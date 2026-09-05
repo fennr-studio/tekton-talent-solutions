@@ -49,14 +49,29 @@ export function Header() {
   useEffect(() => {
     let frame = 0;
 
-    const read = () => {
-      frame = 0;
+    /**
+     * Direction. Deliberately synchronous, and deliberately separate from the
+     * measuring work below: it is two number comparisons, and putting it behind
+     * a rAF alongside a full pass over every section made the bar respond a
+     * frame late and only after that work had run — which reads as the header
+     * simply not getting out of the way.
+     */
+    const readDirection = () => {
       const y = window.scrollY;
+      const delta = y - lastY.current;
 
-      /* Never hide over the first viewport, or the header flickers during the
-         hero's own entrance. */
-      setHidden(y > 220 && y > lastY.current);
+      /* Ignore sub-pixel jitter, or momentum scrolling toggles the bar. */
+      if (Math.abs(delta) < 4) return;
+
+      /* Never hide over the first screen, or it flickers during the hero's
+         own entrance. */
+      setHidden(y > 160 && delta > 0);
       lastY.current = y;
+    };
+
+    /** Measuring work: cheap enough per frame, too costly per scroll event. */
+    const measure = () => {
+      frame = 0;
 
       /* Tone. `mix-blend-difference` cannot be used for this: the header is
          transform-animated, which makes it its own stacking context, so the
@@ -84,10 +99,12 @@ export function Header() {
     };
 
     const onScroll = () => {
-      if (!frame) frame = window.requestAnimationFrame(read);
+      readDirection();
+      if (!frame) frame = window.requestAnimationFrame(measure);
     };
 
-    read();
+    lastY.current = window.scrollY;
+    measure();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
